@@ -42,7 +42,7 @@ public class TowerMenu : MonoBehaviour
         {
             destroyButton.clicked += OnDestroyButtonClicked;
         }
-        root.visible = false;
+        root.visible = true;
     }
     private void OnArcherButtonClicked()    
     {

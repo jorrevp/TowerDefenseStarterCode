@@ -15,5 +15,13 @@ public class Enums : MonoBehaviour
         Sword,
         Wizard
     }
+    public enum SiteLevel
+    {
+        Onbebouwd,
+        level1,
+        level2,
+        level3
+
+    }
 }
 

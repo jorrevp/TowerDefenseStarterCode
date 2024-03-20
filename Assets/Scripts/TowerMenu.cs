@@ -13,6 +13,16 @@ public class TowerMenu : MonoBehaviour
 
     private VisualElement root;
 
+    private ConstructionSite selectedSite;
+
+
+    // Awake is called when the script instance is being loaded
+    void Awake()
+    {
+        // Root element verkrijgen
+        root = GetComponent<UIDocument>().rootVisualElement;
+    }
+
     void Start()
     {
         root = GetComponent<UIDocument>().rootVisualElement;
@@ -90,5 +100,55 @@ public class TowerMenu : MonoBehaviour
         {
             destroyButton.clicked -= OnArcherButtonClicked;
         }
+    }
+    // Functie om het menu te evalueren en knoppen in- of uit te schakelen op basis van de geselecteerde bouwplaats
+    public void EvaluateMenu()
+    {
+        // Als er geen geselecteerde bouwplaats is, return
+        if (selectedSite == null)
+            return;
+
+        // Schakel alle knoppen uit
+        root.Q<Button>("archerButton").SetEnabled(false);
+        root.Q<Button>("swordButton").SetEnabled(false);
+        root.Q<Button>("wizardButton").SetEnabled(false);
+        root.Q<Button>("upgradeButton").SetEnabled(false);
+        root.Q<Button>("destroyButton").SetEnabled(false);
+
+        // Gebruik een switch om de logica voor het inschakelen van knoppen te bepalen op basis van de siteLevel van de geselecteerde site
+        switch (selectedSite.Level)
+        {
+            case Enums.SiteLevel.Onbebouwd:
+                root.Q<Button>("archerButton").SetEnabled(true);
+                root.Q<Button>("swordButton").SetEnabled(true);
+                root.Q<Button>("wizardButton").SetEnabled(true);
+                break;
+            case Enums.SiteLevel.level1:
+            case Enums.SiteLevel.level2:
+                root.Q<Button>("upgradeButton").SetEnabled(true);
+                root.Q<Button>("destroyButton").SetEnabled(true);
+                break;
+            case Enums.SiteLevel.level3:
+                root.Q<Button>("destroyButton").SetEnabled(true);
+                break;
+        }
+    }
+
+    // Functie om een bouwplaats in te stellen en het menu dienovereenkomstig bij te werken
+    public void SetSite(ConstructionSite site)
+    {
+        // Bouwplaats toewijzen aan geselecteerdeSite
+        selectedSite = site;
+
+        // Als de geselecteerde site null is, verberg het menu
+        if (selectedSite == null)
+        {
+            root.visible = false;
+            return;
+        }
+
+        // Menu zichtbaar maken en menu evalueren
+        root.visible = true;
+        EvaluateMenu();
     }
 }

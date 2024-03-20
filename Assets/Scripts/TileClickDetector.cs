@@ -8,6 +8,8 @@ public class TileClickDetector : MonoBehaviour
 {
     public Camera cam; // Assign your main camera here through the Inspector 
     public Tilemap tilemap; // Assign your tilemap here through the Inspector 
+    public GameManager gameManager; // Reference to the GameManager script
+
 
     public TileBase SelectedTile { get; private set; }
     public Vector3 SelectedPosition { get; private set; }
@@ -43,6 +45,7 @@ public class TileClickDetector : MonoBehaviour
         if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
         {
             DetectTileClicked();
+            gameManager.SetSelectedSite(SelectedSite); // Set the selected site in the GameManager
         }
     }
 

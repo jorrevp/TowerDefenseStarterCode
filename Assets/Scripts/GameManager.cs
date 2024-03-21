@@ -6,15 +6,19 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    public List<GameObject> Archers; // Lijst van Archer tower prefabs
-    public List<GameObject> Swords; // Lijst van Sword tower prefabs
-    public List<GameObject> Wizards; // Lijst van Wizard tower prefabs
+    public List<GameObject> Archers = new List<GameObject>(); // Lijst van Archer tower prefabs
+    public List<GameObject> Swords = new List<GameObject>(); // Lijst van Sword tower prefabs
+    public List<GameObject> Wizards = new List<GameObject>(); // Lijst van Wizard tower prefabs
 
     public GameObject TowerMenu; // Referentie naar het TowerMenu GameObject
     private TowerMenu towerMenu; // Referentie naar het TowerMenu script
 
     private ConstructionSite selectedSite; // Variabele om geselecteerde bouwplaats te onthouden
 
+    void Start()
+    {
+        towerMenu = TowerMenu.GetComponent<TowerMenu>();
+    }
     void Awake()
     {
         // Singleton instantiëren
@@ -28,13 +32,15 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        // TowerMenu script referentie verkrijgen
-        towerMenu = TowerMenu.GetComponent<TowerMenu>();
+        
+    }
+    public void SelectSite(ConstructionSite site)
+    {
+        // Onthoud de geselecteerde site
+        selectedSite = site;
 
-        if (towerMenu == null)
-        {
-            Debug.LogError("TowerMenu script is not attached to the TowerMenu GameObject!");
-        }
+        // Stuur de geselecteerde site naar het TowerMenu door SetSite aan te roepen
+        towerMenu.SetSite(selectedSite);
     }
     private void SetTowerLists()
     {
@@ -64,12 +70,12 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-
-    // Functie om de geselecteerde bouwplaats in te stellen
-    public void SetSelectedSite(ConstructionSite site)
+    public void ExampleMethod()
     {
-        selectedSite = site;
+        // Roep een methode aan in het TowerMenu-script
+        towerMenu.NotifyGameManagerOfMenuUpdate();
     }
+    // Functie om de geselecteerde bouwplaats in te stellen
 
     // Functie om de geselecteerde bouwplaats op te vragen
     public ConstructionSite GetSelectedSite()

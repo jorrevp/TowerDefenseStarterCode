@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,20 +15,32 @@ public class ConstructionSite
     {
         TilePosition = tilePosition;
         WorldPosition = worldPosition + new Vector3(0, 0.5f, 0);
-        Level = Enums.SiteLevel.Onbebouwd;
         tower = null;
     }
 
-    public void SetTower(GameObject newTower, Enums.SiteLevel newLevel, Enums.TowerType newType)
+    public void SetTower(GameObject newTower, Enums.SiteLevel level1, Enums.TowerType type)
     {
         if (tower != null)
         {
-            Object.Destroy(tower);
+            GameObject.Destroy(tower);
         }
 
         tower = newTower;
-        Level = newLevel;
-        TowerType = newType;
+        Level = level1;
+        TowerType = type;
+
+        tower.transform.position = WorldPosition;
+    }
+    public void RemoveTower()
+    {
+        if (tower != null)
+        {
+            GameObject.Destroy(tower);
+            tower = null; 
+        }
+
+        Level = Enums.SiteLevel.Onbebouwd;
+        TowerType = default; 
     }
 }
 

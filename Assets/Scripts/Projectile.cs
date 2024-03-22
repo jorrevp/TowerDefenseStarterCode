@@ -12,6 +12,14 @@ public class Projectiles : MonoBehaviour
     {
         RotateTowardsTarget();
     }
+    void RotateTowardsTarget()
+    {
+        if (target != null)
+        {
+            Vector3 direction = (target.position - transform.position).normalized;
+            transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
+        }
+    }
 
     void Update()
     {
@@ -23,18 +31,11 @@ public class Projectiles : MonoBehaviour
 
         transform.position = Vector3.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
 
-        if (Vector3.Distance(transform.position, target.position) < 0.2f)
+        if (Vector2.Distance(transform.position, target.position) < 0.2f)
         {
+            target.GetComponent<Enemy>().Damage(damage);
             Destroy(gameObject);
         } 
     }
-    void RotateTowardsTarget()
-    {
-        if (target != null)
-        {
-            Vector3 direction = target.position - transform.position;
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-        }
-    }
+    
 }

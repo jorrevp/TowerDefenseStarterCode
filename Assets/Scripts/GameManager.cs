@@ -25,61 +25,85 @@ public class GameManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
-            Debug.LogWarning("Trying to instantiate another GameManager, destroying this one.");
             Destroy(gameObject);
         }
-
-        
     }
     public void SelectSite(ConstructionSite site)
     {
-        // Onthoud de geselecteerde site
         selectedSite = site;
 
-        // Stuur de geselecteerde site naar het TowerMenu door SetSite aan te roepen
-        towerMenu.SetSite(selectedSite);
-    }
-    private void SetTowerLists()
-    {
-        // Zorg ervoor dat de lijsten leeg zijn voordat we de prefabs toevoegen
-        Archers.Clear();
-        Swords.Clear();
-        Wizards.Clear();
-
-        // Voeg de prefabs toe aan de lijsten in de gewenste volgorde
-        foreach (Transform child in transform)
+        if (towerMenu != null)
         {
-            Enums.TowerType type = child.GetComponent<Tower>().type;
-            switch (type)
-            {
-                case Enums.TowerType.Archer:
-                    Archers.Add(child.gameObject);
-                    break;
-                case Enums.TowerType.Sword:
-                    Swords.Add(child.gameObject);
-                    break;
-                case Enums.TowerType.Wizard:
-                    Wizards.Add(child.gameObject);
-                    break;
-                default:
-                    Debug.LogWarning("Tower type not recognized: " + type);
-                    break;
-            }
+            towerMenu.SetSite(site);
+        }
+        else
+        {
+            Debug.LogError("TowerMenu component is null in GameManager.");
         }
     }
-    public void ExampleMethod()
+    public void Build(Enums.TowerType type, Enums.SiteLevel level)
     {
-        // Roep een methode aan in het TowerMenu-script
-        towerMenu.NotifyGameManagerOfMenuUpdate();
-    }
-    // Functie om de geselecteerde bouwplaats in te stellen
+        if (selectedSite == null)
+        {
+            Debug.LogError("Er is geen bouwplaats geselecteerd. Kan de toren niet bouwen.");
+            return; 
+        }
 
-    // Functie om de geselecteerde bouwplaats op te vragen
+        GameObject towerPrefab = null;
+
+        int prefabIndex = (int)level - 1;
+
+        switch (type)
+        {
+            case Enums.TowerType.Archer:
+                towerPrefab = Archers[prefabIndex];
+                break;
+            case Enums.TowerType.Sword:
+                towerPrefab = Swords[prefabIndex];
+                break;
+            case Enums.TowerType.Wizard:
+                towerPrefab = Wizards[prefabIndex];
+                break;
+        }
+
+        if (towerPrefab == null)
+        {
+            Debug.LogError("Geen tower prefab gevonden voor het geselecteerde type en niveau.");
+            return;
+        }
+
+        GameObject tower = Instantiate(towerPrefab, selectedSite.WorldPosition, Quaternion.identity);
+
+        selectedSite.SetTower(tower, level, type);
+
+        if (towerMenu != null)
+        {
+            towerMenu.SetSite(null); 
+        }
+    }
+
+    public void DestroyTower()
+    {
+        if (selectedSite == null)
+        {
+            Debug.LogError("Er is geen bouwplaats geselecteerd. Kan de toren niet verwijderen.");
+            return;
+        }
+
+        selectedSite.RemoveTower();
+
+        if (towerMenu != null)
+        {
+            towerMenu.SetSite(null);
+        }
+    }
     public ConstructionSite GetSelectedSite()
     {
         return selectedSite;
     }
 }
+

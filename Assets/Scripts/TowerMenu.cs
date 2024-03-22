@@ -7,9 +7,6 @@ using static Enums;
 
 public class TowerMenu : MonoBehaviour
 {
-    public event Action<ConstructionSite> SiteSelected;
-    public event Action MenuUpdated;
-
     private Button archerButton;
     private Button swordButton;
     private Button wizardButton;
@@ -32,11 +29,11 @@ public class TowerMenu : MonoBehaviour
     void Start()
     {
         root = GetComponent<UIDocument>().rootVisualElement;
-        archerButton = root.Q<Button>("archer-button");
-        swordButton = root.Q<Button>("sword-button");
-        wizardButton = root.Q<Button>("wizard-button");
-        updateButton = root.Q<Button>("button-upgrade");
-        destroyButton = root.Q<Button>("button-destroy");
+        archerButton = root.Q<Button>("archerButton");
+        swordButton = root.Q<Button>("swordButton");
+        wizardButton = root.Q<Button>("wizardButton");
+        updateButton = root.Q<Button>("updateButton");
+        destroyButton = root.Q<Button>("destroyButton");
 
         if (archerButton != null)
         {
@@ -62,23 +59,28 @@ public class TowerMenu : MonoBehaviour
     }
     private void OnArcherButtonClicked()    
     {
-
+        GameManager.Instance.Build(Enums.TowerType.Archer, Enums.SiteLevel.level1);
     }
     private void OnSwordButtonClicked()
     {
-
+        GameManager.Instance.Build(Enums.TowerType.Sword, Enums.SiteLevel.level1);
     }
     private void OnWizardButtonClicked()
     {
-
+        GameManager.Instance.Build(Enums.TowerType.Wizard, Enums.SiteLevel.level1);
     }
     private void OnUpdateButtonClicked()
     {
+        if (selectedSite == null) return;
 
+        Enums.SiteLevel nextLevel = selectedSite.Level + 1; 
+        GameManager.Instance.Build(selectedSite.TowerType, nextLevel);
     }
     private void OnDestroyButtonClicked()
     {
+        if (selectedSite == null) return;
 
+        GameManager.Instance.DestroyTower();
     }
     private void OnDestroy()
     {
@@ -160,10 +162,11 @@ public class TowerMenu : MonoBehaviour
         }
 
         // Menu zichtbaar maken en menu evalueren
-        root.visible = true;
-        EvaluateMenu();
-
-        SiteSelected?.Invoke(selectedSite);
+        else
+        {
+            root.visible = true;
+            EvaluateMenu();
+        }
     }
     public void SetGameManager(GameManager manager)
     {

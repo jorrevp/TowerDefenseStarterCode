@@ -35,7 +35,15 @@ public class Enemy : MonoBehaviour
             }
         }
     }
+    public void Damage(int damage)
+    {
+        health -= damage;
 
+        if (health <= 0)
+        {
+            Destroy(gameObject);
+        }
+    }
     // Function added to set the path index
     public void SetPathIndex(int index)
     {

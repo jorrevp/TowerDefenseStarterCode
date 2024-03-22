@@ -8,9 +8,7 @@ public class TileClickDetector : MonoBehaviour
 {
     public Camera cam; // Assign your main camera here through the Inspector 
     public Tilemap tilemap; // Assign your tilemap here through the Inspector 
-    //public GameManager gameManager; // Reference to the GameManager script
-
-
+  
     public TileBase SelectedTile { get; private set; }
     public Vector3 SelectedPosition { get; private set; }
 
@@ -50,10 +48,12 @@ public class TileClickDetector : MonoBehaviour
 
     void DetectTileClicked()
     {
+        
         // Convert mouse click position to world space 
         Vector3 mouseWorldPos = cam.ScreenToWorldPoint(Input.mousePosition);
         mouseWorldPos.z = 0; // Ensure the z-position is set correctly for 2D 
 
+        Debug.Log("Mouse clicked at position: " + mouseWorldPos);
         // Convert world position to tilemap cell position 
         Vector3Int cellPosition = tilemap.WorldToCell(mouseWorldPos);
         cellPosition.z = 0; // don't know why this is needed 
@@ -63,6 +63,7 @@ public class TileClickDetector : MonoBehaviour
 
         if (clickedTile != null)
         {
+            Debug.Log($"Tile clicked: {clickedTile.name}");
             // Tile was clicked - you can check specific properties or tile types here 
             // Example: Check for a specific tile (by name, for instance) 
 
@@ -89,6 +90,7 @@ public class TileClickDetector : MonoBehaviour
         {
             SelectedSite = null;
         }
+
         // Stuur de geselecteerde constructieplaats naar de GameManager
         GameManager.Instance.SelectSite(SelectedSite);
     }

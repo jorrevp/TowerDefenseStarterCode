@@ -12,13 +12,19 @@ public class Enemy : MonoBehaviour
     public GameObject target { get; set; }
     private int pathIndex = 1;
 
-    
+    private GameManager gameManager;
+
+    private void Start()
+    {
+        gameManager = GameManager.Instance;
+    }
 
     private void Update()
     {
         float step = speed * Time.deltaTime;
 
-        transform.position = Vector2.MoveTowards(transform.position, target.transform.position, step);
+        Vector2 vector2 = Vector2.MoveTowards(transform.position, target.transform.position, step);
+        transform.position = vector2;
 
         // Check how close we are to the target
         if (Vector2.Distance(transform.position, target.transform.position) < 0.1f)
@@ -31,6 +37,7 @@ public class Enemy : MonoBehaviour
             // Destroy the enemy at this point
             if (target == null)
             {
+                gameManager.AttackGate();
                 Destroy(gameObject);
             }
         }
@@ -41,6 +48,8 @@ public class Enemy : MonoBehaviour
 
         if (health <= 0)
         {
+            // If health reaches zero, add credits and destroy the enemy
+            gameManager. AddCredits(points);
             Destroy(gameObject);
         }
     }
@@ -48,5 +57,10 @@ public class Enemy : MonoBehaviour
     public void SetPathIndex(int index)
     {
         pathIndex = index;
+    }
+    private void OnDestroy()
+    {
+        // Verwijder hier de referentie naar gameManager om geheugenlekken te voorkomen
+        gameManager = null;
     }
 }

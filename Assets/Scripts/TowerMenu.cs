@@ -118,6 +118,9 @@ public class TowerMenu : MonoBehaviour
         // Haal het niveau van de geselecteerde constructieplaats op
         SiteLevel siteLevel = selectedSite.Level;
 
+        // Haal de beschikbare credits op van de GameManager
+        int availableCredits = GameManager.Instance.GetCredits();
+
         // Schakel alle knoppen in het torenmenu uit
         archerButton.SetEnabled(false);
         swordButton.SetEnabled(false);
@@ -128,10 +131,13 @@ public class TowerMenu : MonoBehaviour
         switch (siteLevel)
         {
             case Enums.SiteLevel.Onbebouwd:
-                // Alleen de torenknoppen moeten worden ingeschakeld
-                archerButton.SetEnabled(true);
-                swordButton.SetEnabled(true);
-                wizardButton.SetEnabled(true);
+                // Alleen de torenknoppen moeten worden ingeschakeld als er voldoende credits zijn
+                if (availableCredits >= GameManager.Instance.GetCost(TowerType.Archer, Enums.SiteLevel.Onbebouwd))
+                    archerButton.SetEnabled(true);
+                if (availableCredits >= GameManager.Instance.GetCost(TowerType.Sword, Enums.SiteLevel.Onbebouwd))
+                    swordButton.SetEnabled(true);
+                if (availableCredits >= GameManager.Instance.GetCost(TowerType.Wizard, Enums.SiteLevel.Onbebouwd))  
+                    wizardButton.SetEnabled(true);
                 break;
             case Enums.SiteLevel.level1:
             case Enums.SiteLevel.level2:

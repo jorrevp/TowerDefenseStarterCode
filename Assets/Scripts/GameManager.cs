@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Enums;
 
 public class GameManager : MonoBehaviour
 {
@@ -13,11 +14,21 @@ public class GameManager : MonoBehaviour
     public GameObject TowerMenu; // Referentie naar het TowerMenu GameObject
     private TowerMenu towerMenu; // Referentie naar het TowerMenu script
 
+    public GameObject TopMenu;
+    private TopMenu topMenu;
+
+    // Variabelen voor credits, health en huidige wave
+    private int credits;
+    private int health;
+    private int currentWave;
+
     private ConstructionSite selectedSite; // Variabele om geselecteerde bouwplaats te onthouden
 
     void Start()
     {
         towerMenu = TowerMenu.GetComponent<TowerMenu>();
+
+        StartGame();
     }
     void Awake()
     {
@@ -31,6 +42,18 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+    private void StartGame()
+    {
+        // Stel de waarden in voor credits, health en currentWave
+        credits = 200;
+        health = 10;
+        currentWave = 0;
+
+        // Gebruik de functies van TopMenu om de tekst voor elk label in te stellen
+        topMenu.SetCreditsLabel("Credits: " + credits.ToString());
+        topMenu.SetHealthLabel("Health: " + health.ToString());
+        topMenu.SetWaveLabel("Wave: " + currentWave.ToString());
     }
     public void SelectSite(ConstructionSite site)
     {
@@ -53,6 +76,12 @@ public class GameManager : MonoBehaviour
             return; 
         }
 
+        if (selectedSite.Level != Enums.SiteLevel.Onbebouwd && selectedSite.Level != Enums.SiteLevel.level1 && selectedSite.Level != Enums.SiteLevel.level2 && selectedSite.Level != Enums.SiteLevel.level3)
+        {
+            Debug.LogWarning("Invalid site level for building.");
+            return;
+        }
+
         GameObject towerPrefab = null;
 
         int prefabIndex = (int)level - 1;
@@ -60,20 +89,43 @@ public class GameManager : MonoBehaviour
         switch (type)
         {
             case Enums.TowerType.Archer:
-                towerPrefab = Archers[prefabIndex];
+                if (prefabIndex < Archers.Count)
+                    towerPrefab = Archers[prefabIndex];
                 break;
             case Enums.TowerType.Sword:
-                towerPrefab = Swords[prefabIndex];
+                if (prefabIndex < Swords.Count)
+                    towerPrefab = Swords[prefabIndex];
                 break;
             case Enums.TowerType.Wizard:
-                towerPrefab = Wizards[prefabIndex];
+                if (prefabIndex < Wizards.Count)
+                    towerPrefab = Wizards[prefabIndex];
                 break;
         }
+
 
         if (towerPrefab == null)
         {
             Debug.LogError("Geen tower prefab gevonden voor het geselecteerde type en niveau.");
             return;
+        }
+
+        int cost = GetCost(type, level);
+
+        if (selectedSite.Level == Enums.SiteLevel.Onbebouwd) // Verkoop van toren
+        {
+            AddCredits(cost); // Credits toevoegen met true als argument om aan te geven dat het om een verkoop gaat
+        }
+        else // Aankoop van nieuwe toren
+        {
+            if (GetCredits() >= cost)
+            {
+                RemoveCredits(cost); // Credits aftrekken voor aankoop
+            }
+            else
+            {
+                Debug.LogWarning("Onvoldoende credits om de toren te bouwen.");
+                return;
+            }
         }
 
         GameObject tower = Instantiate(towerPrefab, selectedSite.WorldPosition, Quaternion.identity);
@@ -104,6 +156,75 @@ public class GameManager : MonoBehaviour
     public ConstructionSite GetSelectedSite()
     {
         return selectedSite;
+    }
+    public void AttackGate()
+    {
+        // Verminder de gezondheid van de poort met 1
+        health--;
+
+        // Update het label in het TopMenu
+        topMenu.SetHealthLabel("Health: " + health.ToString());
+    }
+    public void AddCredits(int amount)
+    {
+        // Voeg het bedrag toe aan de huidige credits
+        credits += amount;
+
+        // Update het label in het TopMenu
+        topMenu.SetCreditsLabel("Credits: " + credits.ToString());
+
+        // Beoordeel het torenmenu
+        EvaluateTowerMenu();
+    }
+
+    private void EvaluateTowerMenu()
+    {
+        // Voeg hier code toe om het torenmenu te evalueren op basis van credits
+        // bijvoorbeeld: schakel knoppen in/uit op basis van beschikbare credits
+    }
+    public void RemoveCredits(int amount)
+    {
+        // Trek het bedrag af van de huidige credits
+        credits -= amount;
+
+        // Zorg ervoor dat de credits niet onder nul kunnen gaan
+        if (credits < 0)
+        {
+            credits = 0;
+        }
+
+        // Update het label in het TopMenu
+        topMenu.SetCreditsLabel("Credits: " + credits.ToString());
+
+        // Beoordeel het torenmenu
+        EvaluateTowerMenu();
+    }
+    public int GetCredits()
+    {
+        return credits;
+    }
+    public int GetCost(TowerType type, SiteLevel level, bool selling = false)
+    {
+        int cost = 0;
+
+        // Bepaal de kosten op basis van het type toren en het niveau
+        switch (type)
+        {
+            case TowerType.Archer:
+                cost = (level == Enums.SiteLevel.level1) ? 50 : (level == Enums.SiteLevel.level2) ? 75 : (level == Enums.SiteLevel.level3 && !selling) ? 150 : 0;
+                break;
+            case TowerType.Sword:
+                cost = (level == Enums.SiteLevel.level1) ? 75 : (level == Enums.SiteLevel.level2) ? 100 : (level == Enums.SiteLevel.level3 && !selling) ? 200 : 0;
+                break;
+            case TowerType.Wizard:
+                cost = (level == Enums.SiteLevel.level1) ? 100 : (level == Enums.SiteLevel.level2) ? 125 : (level == Enums.SiteLevel.level3 && !selling) ? 250 : 0;
+                break;
+            default:
+                Debug.LogError("Unknown tower type: " + type);
+                break;
+        }
+
+        return cost;
     }
 }
 

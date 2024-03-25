@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static Enums;
 
 public class GameManager : MonoBehaviour
@@ -14,8 +15,8 @@ public class GameManager : MonoBehaviour
     public GameObject TowerMenu; // Referentie naar het TowerMenu GameObject
     private TowerMenu towerMenu; // Referentie naar het TowerMenu script
 
-    public GameObject TopMenu;
-    private TopMenu topMenu;
+    public GameObject TopMenu; // Referentie naar het TopMenu GameObject
+    private TopMenu topMenu; // Referentie naar het TopMenu script
 
     // Variabelen voor credits, health en huidige wave
     private int credits;
@@ -24,9 +25,12 @@ public class GameManager : MonoBehaviour
 
     private ConstructionSite selectedSite; // Variabele om geselecteerde bouwplaats te onthouden
 
+    
+
     void Start()
     {
         towerMenu = TowerMenu.GetComponent<TowerMenu>();
+        topMenu = TopMenu.GetComponent<TopMenu>();
 
         StartGame();
     }
@@ -54,6 +58,8 @@ public class GameManager : MonoBehaviour
         topMenu.SetCreditsLabel("Credits: " + credits.ToString());
         topMenu.SetHealthLabel("Health: " + health.ToString());
         topMenu.SetWaveLabel("Wave: " + currentWave.ToString());
+        // Zet waveActive op false bij het starten van de game
+     
     }
     public void SelectSite(ConstructionSite site)
     {
@@ -162,8 +168,27 @@ public class GameManager : MonoBehaviour
         // Verminder de gezondheid van de poort met 1
         health--;
 
-        // Update het label in het TopMenu
-        topMenu.SetHealthLabel("Health: " + health.ToString());
+        // Update the label in the TopMenu
+        if (topMenu != null)
+        {
+            topMenu.SetHealthLabel("Health: " + health.ToString());
+        }
+        else
+        {
+            Debug.LogError("TopMenu script niet gevonden in de scene.");
+        }
+
+        // Controleer of de gezondheid van de poort onder 0 is
+        if (health <= 0)
+        {
+            EndGame(); // Roep een methode aan om het einde van de game te verwerken
+        }
+    }
+    private void EndGame()
+    {
+        // Hier voeg je code toe om de game te beëindigen en terug te gaan naar de IntroScene
+        // Bijvoorbeeld:
+        SceneManager.LoadScene("IntroScene");
     }
     public void AddCredits(int amount)
     {
@@ -226,5 +251,6 @@ public class GameManager : MonoBehaviour
 
         return cost;
     }
+    
 }
 

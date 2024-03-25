@@ -18,7 +18,7 @@ public class ConstructionSite
         tower = null;
     }
 
-    public void SetTower(GameObject newTower, Enums.SiteLevel level1, Enums.TowerType type)
+    public void SetTower(GameObject newTower, Enums.SiteLevel level, Enums.TowerType type)
     {
         if (tower != null)
         {
@@ -26,7 +26,7 @@ public class ConstructionSite
         }
 
         tower = newTower;
-        Level = level1;
+        Level = level;
         TowerType = type;
 
         tower.transform.position = WorldPosition;

@@ -52,7 +52,12 @@ public class Tower : MonoBehaviour
             Vector3 direction = (target.transform.position - transform.position).normalized;
 
             projectile.speed = projectileSpeed; // Assuming 'projectileSpeed' is a variable in Tower script
-            bullet.GetComponent<Rigidbody2D>().velocity = direction * projectile.speed; // Assuming the bullet has a Rigidbody2D component
+
+            // Bereken de verplaatsing per frame op basis van de richting en snelheid
+            Vector3 displacement = direction * projectile.speed * Time.deltaTime;
+
+            // Verplaats de kogel rechtstreeks
+            bullet.transform.Translate(displacement, Space.World); // Space.World gebruiken omdat de richting in de wereldruimte is genormaliseerd
         }
         else
         {

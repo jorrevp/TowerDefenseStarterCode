@@ -19,12 +19,7 @@ public class TowerMenu : MonoBehaviour
     private GameManager gameManager;
 
 
-    // Awake is called when the script instance is being loaded
-    void Awake()
-    {
-        // Root element verkrijgen
-        root = GetComponent<UIDocument>().rootVisualElement;
-    }
+
 
     void Start()
     {

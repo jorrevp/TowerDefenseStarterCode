@@ -65,7 +65,7 @@ public class TopMenu : MonoBehaviour
     }
     public void startWaveButton_clicked()
     {
-        SetWaveLabel("Wave " + (GameManager.Instance.currentWave + 1)); // Voeg 1 toe aan de huidige golfindex
+        
         if (gameManager != null)
         {
             gameManager.StartWave();

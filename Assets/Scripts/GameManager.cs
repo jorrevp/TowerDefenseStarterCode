@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
         }
         enemySpawner = FindObjectOfType<EnemySpawner>(); // Zoek de EnemySpawner in de scene
     }
-    private void StartGame()
+    public void StartGame()
     {
         if (!waveActive)
         {

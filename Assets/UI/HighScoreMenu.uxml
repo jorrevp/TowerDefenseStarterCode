@@ -1,0 +1,13 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <ui:VisualElement name="VisualElement" style="flex-grow: 1; background-image: url(&apos;project://database/Assets/Pictures/TopMenuTowerDefense.jpg?fileID=2800000&amp;guid=accb1434915736f4bb60585b02ebb497&amp;type=3#TopMenuTowerDefense&apos;); color: rgb(27, 27, 27); -unity-background-image-tint-color: rgba(255, 255, 255, 0.31);">
+        <ui:Label tabindex="-1" text="Game Over" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label" style="left: 350px; top: 25px; align-items: flex-start; align-self: flex-start; -unity-font-style: bold; position: absolute;" />
+        <ui:Label tabindex="-1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="gameResultLabel" style="left: 350px; top: 75px; position: absolute;" />
+        <ui:Label tabindex="-1" text="High Scores" parse-escape-sequences="true" display-tooltip-when-elided="true" style="left: 350px; top: 150px; align-items: flex-start; align-self: flex-start; -unity-font-style: bold; position: absolute;" />
+        <ui:Label tabindex="-1" text="..." parse-escape-sequences="true" display-tooltip-when-elided="true" style="position: absolute; left: 350px; top: 175px;" />
+        <ui:Button text="Play Again" parse-escape-sequences="true" display-tooltip-when-elided="true" name="newGameButton" style="top: 325px; position: absolute; left: 350px;" />
+        <ui:Label tabindex="-1" text="..." parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label" style="position: absolute; left: 350px; top: 200px;" />
+        <ui:Label tabindex="-1" text="..." parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label" style="position: absolute; left: 350px; top: 225px;" />
+        <ui:Label tabindex="-1" text="..." parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label" style="position: absolute; left: 350px; top: 250px;" />
+        <ui:Label tabindex="-1" text="..." parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label" style="position: absolute; left: 350px; top: 275px; -unity-background-image-tint-color: rgba(255, 255, 255, 0);" />
+    </ui:VisualElement>
+</ui:UXML>

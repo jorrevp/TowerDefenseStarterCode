@@ -186,6 +186,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playGameButton: {fileID: 0}
   quitGameButton: {fileID: 0}
+  nameInputField: {fileID: 0}
 --- !u!1 &899749765
 GameObject:
   m_ObjectHideFlags: 0

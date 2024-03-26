@@ -1,43 +1,60 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class introMenu : MonoBehaviour
 {
-    public Button playGameButton;
-    public Button quitGameButton;
-
+    private Button playGameButton;
+    private Button quitGameButton;
+    private TextField textField;
 
     private void Start()
     {
-        // Zoek en wijs de knoppen toe
-        playGameButton = GameObject.Find("PlayGameButton").GetComponent<Button>();
-        quitGameButton = GameObject.Find("QuitGameButton").GetComponent<Button>();
+        // Haal de root VisualElement op
+        var root = GetComponent<UIDocument>().rootVisualElement;
+        Debug.Log("Root VisualElement: " + root);
 
-        // Voeg luisteraars toe aan de knoppen
-        playGameButton.onClick.AddListener(PlayGame);
-        quitGameButton.onClick.AddListener(QuitGame);
+        // Zoek de knoppen en het tekstveld in de root VisualElement
+        playGameButton = root.Q<Button>("StartButton");
+        quitGameButton = root.Q<Button>("QuitButton");
+        textField = root.Q<TextField>("TextField");
 
-        // Disable de "Start" knop wanneer het menu opent
-        playGameButton.interactable = false;
+        // Controleer of de knoppen en het tekstveld zijn gevonden
+        if (playGameButton != null)
+            playGameButton.clicked += StartButtonClicked;
+        else
+            Debug.LogError("Start Button not found!");
+
+        if (quitGameButton != null)
+            quitGameButton.clicked += QuitButtonClicked;
+        else
+            Debug.LogError("Quit Button not found!");
     }
-    void PlayGame()
+    private void OnDestroy()
     {
-       
+        // Verwijder de callbackfuncties om geheugenlekken te voorkomen
+        if (playGameButton != null)
+        {
+            playGameButton.clicked -= StartButtonClicked;
+        }
+
+        if (quitGameButton != null)
+        {
+            quitGameButton.clicked -= QuitButtonClicked;
+        }
+    }
+
+    private void StartButtonClicked()
+    {
         // Laad de GameScene
         SceneManager.LoadScene("GameScene");
     }
-    void QuitGame()
+
+    private void QuitButtonClicked()
     {
-        // Voer hier de logica uit om het spel af te sluiten
+        // Sluit de game af
         Application.Quit();
-    }
-    // Verwijder luisteraars bij het vernietigen van het object
-    private void OnDestroy()
-    {
-        playGameButton.onClick.RemoveAllListeners();
-        quitGameButton.onClick.RemoveAllListeners();
     }
 }

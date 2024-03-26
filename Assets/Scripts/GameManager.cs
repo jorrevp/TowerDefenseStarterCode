@@ -14,14 +14,16 @@ public class GameManager : MonoBehaviour
 
     public GameObject TowerMenu; // Referentie naar het TowerMenu GameObject
     private TowerMenu towerMenu; // Referentie naar het TowerMenu script
-
+    private EnemySpawner enemySpawner; // Een referentie naar de EnemySpawner
     public GameObject TopMenu; // Referentie naar het TopMenu GameObject
     private TopMenu topMenu; // Referentie naar het TopMenu script
 
     // Variabelen voor credits, health en huidige wave
     private int credits;
     private int health;
-    private int currentWave;
+    private int currentWave = 0;
+
+    private bool waveActive = false;
 
     private ConstructionSite selectedSite; // Variabele om geselecteerde bouwplaats te onthouden
 
@@ -46,6 +48,7 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        enemySpawner = FindObjectOfType<EnemySpawner>(); // Zoek de EnemySpawner in de scene
     }
     private void StartGame()
     {
@@ -58,8 +61,12 @@ public class GameManager : MonoBehaviour
         topMenu.SetCreditsLabel("Credits: " + credits.ToString());
         topMenu.SetHealthLabel("Health: " + health.ToString());
         topMenu.SetWaveLabel("Wave: " + currentWave.ToString());
+
         // Zet waveActive op false bij het starten van de game
-     
+        // Zorg ervoor dat waveActive zeker false is wanneer het spel wordt gestart
+        waveActive = false;
+        // Start de eerste golf
+        StartWave();
     }
     public void SelectSite(ConstructionSite site)
     {
@@ -119,7 +126,7 @@ public class GameManager : MonoBehaviour
 
         if (selectedSite.Level == Enums.SiteLevel.Onbebouwd) // Verkoop van toren
         {
-            AddCredits(cost); // Credits toevoegen met true als argument om aan te geven dat het om een verkoop gaat
+           RemoveCredits(cost); // Credits toevoegen met true als argument om aan te geven dat het om een verkoop gaat
         }
         else // Aankoop van nieuwe toren
         {
@@ -251,6 +258,52 @@ public class GameManager : MonoBehaviour
 
         return cost;
     }
-    
+
+    // Functie om een golf te starten
+    public void StartWave()
+    {
+        // Verhoog de waarde van currentWave
+        currentWave++;
+
+        // Roep de StartWave-functie van de EnemySpawner aan om de golf te starten
+        enemySpawner.StartWave(currentWave);
+
+        // Verander het label voor de huidige golf in topMenu
+        ChangeWaveLabel(currentWave);
+
+        // Verander waveActive naar true
+        waveActive = true;
+
+        // Voeg hier eventuele andere logica toe die nodig is om een golf te starten
+    }
+
+    // Functie om een golf te beëindigen
+    public void EndWave(int gateHealth)
+    {
+        // Controleer of de gezondheid van de poort onder nul is OF als de golf gewoon is voltooid
+        if (gateHealth <= 0 || !waveActive)
+        {
+            // Verander waveActive naar false om de golf te stoppen
+            waveActive = false;
+        }
+        else
+        {
+            Debug.Log("Wave " + currentWave + " is completed.");
+        }
+        StartNextWave(); // Start automatisch de volgende golf
+    }
+    // Functie om het label van de golf te veranderen in topMenu
+    private void ChangeWaveLabel(int waveNumber)
+    {
+        // Voeg hier code toe om het label van de golf te veranderen, bijvoorbeeld:
+        topMenu.SetWaveLabel("Wave " + waveNumber);
+    }
+    public void StartNextWave()
+    {
+        currentWave++;
+        enemySpawner.StartWave(currentWave);
+        waveActive = true;
+    }
+
 }
 

@@ -12,11 +12,14 @@ public class TopMenu : MonoBehaviour
     private Label healthLabel;
     private Button startWaveButton;
 
+    private GameManager gameManager;
+
     private VisualElement root;
     void Awake()
     {
         // Root element verkrijgen
         root = GetComponent<UIDocument>().rootVisualElement;
+        gameManager = FindObjectOfType<GameManager>(); // Zoek GameManager in de scene
     }
     void Start()
     {
@@ -39,7 +42,7 @@ public class TopMenu : MonoBehaviour
     // Voeg hier je functie toe om een wave te starten
     void StartWave()
     {
-        // Voeg hier de logica toe om een wave te starten
+       
     }
 
     // Voeg hier de functies toe om de labels aan te passen
@@ -62,5 +65,39 @@ public class TopMenu : MonoBehaviour
     void OnDestroy()
     {
         startWaveButton.clicked -= StartWave;
+    }
+    public void startWaveButton_clicked()
+    {
+        if (gameManager != null)
+        {
+            gameManager.StartWave();
+            DisableWaveButton();
+        }
+        else
+        {
+            Debug.LogWarning("GameManager not found!");
+        }
+    }
+    public void EnableWaveButton()
+    {
+        if (startWaveButton != null)
+        {
+            startWaveButton.SetEnabled(true);
+        }
+        else
+        {
+            Debug.LogWarning("WaveButton not assigned!");
+        }
+    }
+    private void DisableWaveButton()
+    {
+        if (startWaveButton != null)
+        {
+            startWaveButton.SetEnabled(false);
+        }
+        else
+        {
+            Debug.LogWarning("WaveButton not assigned!");
+        }
     }
 }

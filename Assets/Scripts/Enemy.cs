@@ -11,14 +11,6 @@ public class Enemy : MonoBehaviour
     public Enums.Path path { get; set; }
     public GameObject target { get; set; }
     private int pathIndex = 1;
-
-    private GameManager gameManager;
-
-    private void Start()
-    {
-        gameManager = GameManager.Instance;
-    }
-
     private void Update()
     {
         float step = speed * Time.deltaTime;
@@ -37,7 +29,7 @@ public class Enemy : MonoBehaviour
             // Destroy the enemy at this point
             if (target == null)
             {
-                gameManager.AttackGate();
+                GameManager.Instance.AttackGate();
                 Destroy(gameObject);
             }
         }
@@ -49,7 +41,7 @@ public class Enemy : MonoBehaviour
         if (health <= 0)
         {
             // If health reaches zero, add credits and destroy the enemy
-            gameManager. AddCredits(points);
+            GameManager.Instance. AddCredits(points);
             Destroy(gameObject);
         }
     }
@@ -58,9 +50,5 @@ public class Enemy : MonoBehaviour
     {
         pathIndex = index;
     }
-    private void OnDestroy()
-    {
-        // Verwijder hier de referentie naar gameManager om geheugenlekken te voorkomen
-        gameManager = null;
-    }
+    
 }

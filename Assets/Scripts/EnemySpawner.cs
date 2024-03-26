@@ -14,9 +14,9 @@ public class EnemySpawner : MonoBehaviour
 
     // Private counter for UFOs
     private int ufoCounter = 0;
+    private GameManager gameManager;
 
-    // Awake wordt aangeroepen wanneer de scriptinstantie wordt geladen.
-    private void Awake()
+    private void Start()
     {
         if (Instance == null)
         {
@@ -25,7 +25,9 @@ public class EnemySpawner : MonoBehaviour
         else
         {
             Destroy(gameObject);
+            return;
         }
+        gameManager = GameManager.Instance;
     }
     private void SpawnEnemy(int type, Enums.Path path)
     {
@@ -41,6 +43,8 @@ public class EnemySpawner : MonoBehaviour
         var script = newEnemy.GetComponent<Enemy>();
         script.path = path;
         script.target = selectedPath[1];
+
+        gameManager.AddInGameEnemy();
     }
 
     // Functie om golven te starten
@@ -61,6 +65,12 @@ public class EnemySpawner : MonoBehaviour
                 break;
             case 3:
                 InvokeRepeating("StartWave3", 1f, 1f);
+                break;
+            case 4:
+                InvokeRepeating("StartWave4", 1f, 1f);
+                break;
+            case 5:
+                InvokeRepeating("StartWave5", 1f, 1f);
                 break;
         }
     }
@@ -122,6 +132,51 @@ public class EnemySpawner : MonoBehaviour
             CancelInvoke("StartWave3");
         }
     }
+    private void StartWave4()
+    {
+        if (ufoCounter < 70)
+        {
+            SpawnEnemy(2, Enums.Path.Path1); // Veronderstel dat type 2 een moeilijkere vijand is, je kunt dit aanpassen aan je eigen logica
+            ufoCounter++;
+        }
+        else if (ufoCounter < 90)
+        {
+            SpawnEnemy(3, Enums.Path.Path1); // Veronderstel dat type 3 een nog moeilijkere vijand is, je kunt dit aanpassen aan je eigen logica
+            ufoCounter++;
+        }
+        else if (ufoCounter < 120)
+        {
+            SpawnEnemy(Random.Range(0, Enemies.Count), Enums.Path.Path1); // Random mix van vijanden
+            ufoCounter++;
+        }
+        else
+        {
+            CancelInvoke("StartWave4");
+        }
+    }
+    
+    private void StartWave5()
+    {
+    if (ufoCounter < 100)
+    {
+        SpawnEnemy(3, Enums.Path.Path1); // Veronderstel dat type 3 een moeilijkere vijand is, je kunt dit aanpassen aan je eigen logica
+        ufoCounter++;
+    }
+    else if (ufoCounter < 130)
+    {
+        SpawnEnemy(4, Enums.Path.Path1); // Veronderstel dat type 4 een nog moeilijkere vijand is, je kunt dit aanpassen aan je eigen logica
+        ufoCounter++;
+    }
+    else if (ufoCounter < 160)
+    {
+        SpawnEnemy(Random.Range(0, Enemies.Count), Enums.Path.Path1); // Random mix van vijanden
+        ufoCounter++;
+    }
+    else
+    {
+        CancelInvoke("StartWave5");
+    }
+}
 
     public GameObject RequestTarget(Enums.Path path, int index)
     {

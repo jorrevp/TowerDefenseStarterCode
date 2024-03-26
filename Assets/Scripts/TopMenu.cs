@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -15,14 +16,9 @@ public class TopMenu : MonoBehaviour
     private GameManager gameManager;
 
     private VisualElement root;
-    void Awake()
+    private void Start()
     {
-        // Root element verkrijgen
-        root = GetComponent<UIDocument>().rootVisualElement;
-        gameManager = FindObjectOfType<GameManager>(); // Zoek GameManager in de scene
-    }
-    void Start()
-    {
+        var root = GetComponent<UIDocument>().rootVisualElement;
         // Zoek de labels en button in de UI-document hiërarchie
         waveLabel = uiDocument.rootVisualElement.Q<Label>("waveLabel");
         creditsLabel = uiDocument.rootVisualElement.Q<Label>("creditsLabel");
@@ -42,7 +38,8 @@ public class TopMenu : MonoBehaviour
     // Voeg hier je functie toe om een wave te starten
     void StartWave()
     {
-       
+        GameManager.Instance.StartWave();
+
     }
 
     // Voeg hier de functies toe om de labels aan te passen
@@ -68,6 +65,7 @@ public class TopMenu : MonoBehaviour
     }
     public void startWaveButton_clicked()
     {
+        SetWaveLabel("Wave " + (GameManager.Instance.currentWave + 1)); // Voeg 1 toe aan de huidige golfindex
         if (gameManager != null)
         {
             gameManager.StartWave();

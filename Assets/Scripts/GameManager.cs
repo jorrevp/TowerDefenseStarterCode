@@ -21,8 +21,11 @@ public class GameManager : MonoBehaviour
     // Variabelen voor credits, health en huidige wave
     private int credits;
     private int health;
-    private int currentWave = 0;
-    private bool waveActive = false;
+    public int maxWave = 5; 
+
+    public int currentWave = 0;
+    private bool waveActive = false; 
+    private int enemyInGameCounter = 0;
 
     private ConstructionSite selectedSite; // Variabele om geselecteerde bouwplaats te onthouden
 
@@ -51,21 +54,22 @@ public class GameManager : MonoBehaviour
     }
     private void StartGame()
     {
-        // Stel de waarden in voor credits, health en currentWave
-        credits = 200;
-        health = 10;
-        currentWave = 0;
+        if (!waveActive)
+        {
+            waveActive = true;          
+            Debug.Log("Starting Wave " + currentWave);
+            
+            // Stel de waarden in voor credits, health en currentWave
+            credits = 200;
+            health = 10;
+            
 
-        // Gebruik de functies van TopMenu om de tekst voor elk label in te stellen
-        topMenu.SetCreditsLabel("Credits: " + credits.ToString());
-        topMenu.SetHealthLabel("Health: " + health.ToString());
-        topMenu.SetWaveLabel("Wave: " + currentWave.ToString());
-
-        // Zet waveActive op false bij het starten van de game
-        // Zorg ervoor dat waveActive zeker false is wanneer het spel wordt gestart
-        waveActive = false;
-        // Start de eerste golf
-        StartWave();
+            // Gebruik de functies van TopMenu om de tekst voor elk label in te stellen
+            topMenu.SetCreditsLabel("Credits: " + credits.ToString());
+            topMenu.SetHealthLabel("Health: " + health.ToString());
+            topMenu.SetWaveLabel("Wave: " + currentWave.ToString());
+           
+        }
     }
     public void SelectSite(ConstructionSite site)
     {
@@ -273,30 +277,61 @@ public class GameManager : MonoBehaviour
         // Verander waveActive naar true
         waveActive = true;
 
+        enemyInGameCounter = 0;
         // Voeg hier eventuele andere logica toe die nodig is om een golf te starten
     }
 
     // Functie om een golf te beëindigen
-    public void EndWave(int gateHealth)
+
+    public void EndWave()
     {
-        // Controleer of de gezondheid van de poort onder nul is OF als de golf gewoon is voltooid
-        if (gateHealth <= 0 || !waveActive)
+        waveActive = false;
+
+        // Voeg hier de logica toe om te controleren of de golf is afgelopen, en roep EnableWaveButton aan als dat het geval is
+
+        // Als de health van de gate onder 0 is
+        if (health <= 0)
         {
-            // Verander waveActive naar false om de golf te stoppen
-            waveActive = false;
+            // Roep de EndGame functie aan
+            EndGame();
+            return;
         }
-        else
+
+        // Controleer of alle vijanden zijn verslagen
+        if (enemyInGameCounter <= 0)
         {
-            Debug.Log("Wave " + currentWave + " is completed.");
+            // Controleer of de huidige wave gelijk is aan de laatste wave
+            if (currentWave == maxWave)
+            {
+                // Roep de EndGame functie aan
+                EndGame();
+            }
+            else
+            {
+                // Roep EnableWaveButton aan om de golfknop weer interactief te maken
+                topMenu.EnableWaveButton();
+            }
         }
-        StartNextWave(); // Start automatisch de volgende golf
-        topMenu.EnableWaveButton(); // Roep de functie aan om de golfknop in te schakelen
     }
     // Functie om het label van de golf te veranderen in topMenu
     private void ChangeWaveLabel(int waveNumber)
     {
         // Voeg hier code toe om het label van de golf te veranderen, bijvoorbeeld:
         topMenu.SetWaveLabel("Wave " + waveNumber);
+    }
+    public void AddInGameEnemy()
+    {
+        enemyInGameCounter++;
+
+    }
+    public void RemoveInGameEnemy()
+    {
+        enemyInGameCounter--;
+
+        if (!waveActive && enemyInGameCounter <= 0)
+        {
+            topMenu.EnableWaveButton();
+        }
     }
     public void StartNextWave()
     {

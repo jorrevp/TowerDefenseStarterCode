@@ -12,6 +12,7 @@ public class TileClickDetector : MonoBehaviour
     public TileBase SelectedTile { get; private set; }
     public Vector3 SelectedPosition { get; private set; }
     private List<ConstructionSite> sites = new List<ConstructionSite>();
+    
     public ConstructionSite SelectedSite { get; private set; }
     private void Start()
     {
@@ -84,6 +85,7 @@ public class TileClickDetector : MonoBehaviour
         }
         GameManager.Instance.SelectSite(SelectedSite);
     }
+    
 }
 
     

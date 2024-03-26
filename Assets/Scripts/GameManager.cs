@@ -291,6 +291,7 @@ public class GameManager : MonoBehaviour
             Debug.Log("Wave " + currentWave + " is completed.");
         }
         StartNextWave(); // Start automatisch de volgende golf
+        topMenu.EnableWaveButton(); // Roep de functie aan om de golfknop in te schakelen
     }
     // Functie om het label van de golf te veranderen in topMenu
     private void ChangeWaveLabel(int waveNumber)

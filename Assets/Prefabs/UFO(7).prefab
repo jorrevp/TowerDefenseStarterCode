@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 4
-  health: 5
+  health: 9
   points: 2
 --- !u!70 &8864357541161217437
 CapsuleCollider2D:

@@ -17,8 +17,8 @@ public class introMenu : MonoBehaviour
         Debug.Log("Root VisualElement: " + root);
 
         // Zoek de knoppen en het tekstveld in de root VisualElement
-        playGameButton = root.Q<Button>("StartButton");
-        quitGameButton = root.Q<Button>("QuitButton");
+        playGameButton = root.Q<Button>("playGameButton");
+        quitGameButton = root.Q<Button>("quitGameButton");
         textField = root.Q<TextField>("TextField");
 
         // Controleer of de knoppen en het tekstveld zijn gevonden

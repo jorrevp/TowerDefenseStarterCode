@@ -22,7 +22,6 @@ public class GameManager : MonoBehaviour
     private int credits;
     private int health;
     private int currentWave = 0;
-
     private bool waveActive = false;
 
     private ConstructionSite selectedSite; // Variabele om geselecteerde bouwplaats te onthouden
